@@ -1,12 +1,12 @@
 //
-//  Untitled.swift
+//  APIProtocols.swift
 //  AppUIKiTTeste
 //
 //  Created by Sérgio César Lira Júnior on 11/04/25.
 //
 import Foundation
 
-protocol APIENdoPoint {
+public protocol APIEndpoints {
     var baseURL: URL { get }
     var path: String { get }
     var method: HTTPMethod { get }
@@ -14,7 +14,11 @@ protocol APIENdoPoint {
     var parameters: [String: Any]? { get }
 }
 
-enum HTTPMethod: String {
+protocol APIClient {
+    func request<T: Decodable, U: APIEndpoints>(_ endpoint: U, completion: @escaping (Result<T, APIError>) -> Void)
+}
+
+public enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"

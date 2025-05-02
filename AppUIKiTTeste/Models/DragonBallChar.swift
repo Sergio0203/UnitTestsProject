@@ -5,3 +5,7 @@
 //  Created by Sérgio César Lira Júnior on 11/04/25.
 //
 
+struct DragonBallChar: Decodable {
+    let name: String?
+    let image: String?
+}
