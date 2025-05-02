@@ -39,6 +39,6 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: ButtonDelegate {
     @objc func buttonTapped() {
-        print("Button Tapped")
+        homeView.gradient.colors = [UIColor.systemRed.cgColor, UIColor.systemYellow.cgColor]
     }
 }

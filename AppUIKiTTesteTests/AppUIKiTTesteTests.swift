@@ -12,7 +12,7 @@ import XCTest
 final class AppUIKiTTesteTests: XCTestCase {
     var session: URLSessionAPIClient!
     var mockSession: MockURLSession!
-
+    
     override func setUp() {
         super.setUp()
         mockSession = MockURLSession()
@@ -51,7 +51,7 @@ final class AppUIKiTTesteTests: XCTestCase {
             switch result {
             case .success(let decodedObject):
                 XCTAssertEqual(decodedObject, expectedData)
-
+                
             case .failure(let error):
                 XCTFail("Unexpected error: \(error)")
             }
@@ -59,5 +59,38 @@ final class AppUIKiTTesteTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func testRequestNetworkErrorReturnsError() {
+        //Given
+        let expectedError = URLError(.notConnectedToInternet)
+        mockSession.error = expectedError
+        
+        let endpoint = MockEndPoint(
+            baseURL: URL(string: "https://google.com")!,
+            path: "/test",
+            method: .get
+        )
+        
+        let expectation = self.expectation(description: "Network error expectation")
+        
+        //When
+        session.request(endpoint) { (result: Result<MockDecodable, APIError>) in
+            //Then
+            switch result {
+            case .success:
+                XCTFail("Should not return success")
+            case .failure(let error):
+                switch error {
+                case .requestError(let receivedError as URLError):
+                    XCTAssertEqual(receivedError, expectedError)
+                default:
+                    XCTFail("Unexpected error \(error)")
+                }
+            }
+            expectation.fulfill()
+        }
+        
+         wait(for: [expectation], timeout: 1.0)
     }
 }
